@@ -36,13 +36,26 @@ body {
     line-height: 1.2;
 }
 
-#logo {
+.header__logo-image {
     float: left;
     position: fixed;
-    margin: 100px 14px 12px 37px;
+    margin: 50px 0px 0px 0px;
     padding: 0px 0px 3px 0px;
-    width: 200px;
+    width: 150px;
     text-align: left;
     border: 0px solid #000000;
     background: #fff;
+}
+
+.header__logo {
+    float: left;
+    width: 150px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.region-sidebar-first {
+    float: left;
+    position: fixed;
+    margin-top: 150px;
 }
