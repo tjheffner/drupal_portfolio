@@ -1,0 +1,30 @@
+<?php
+
+class DnaTestClass extends DrupalUnitTestCase {
+    public static function getInfo() {
+        return array(
+            'name' => 'DNA Sequencing Unit Test',
+            'description' => 'A test of some kind',
+            'group' => 'Examples',
+        );
+    }
+
+    function testDnaSequence() {
+        $input = 'A';
+        $result = sequence($input);
+        $message = 'An input of A will return T';
+        $this->assertEqual($result, 'T');
+
+        $input = 'C';
+        $result = sequence($input);
+        $message = 'An input of C will return G';
+        $this->assertEqual($result, 'G');
+
+        $input = 'ATCG';
+        $result = sequence($input);
+        $message = 'An input of ATCG will return TAGC';
+        $this->assertEqual($result, 'TAGC');
+    }
+}
+
+?>
