@@ -1,0 +1,6 @@
+name = DNA
+description = A module that returns the other half of a given DNA sequence
+package = Epicodus Examples
+core = 7.x
+files[] = dna.module
+files[] = dna.test
