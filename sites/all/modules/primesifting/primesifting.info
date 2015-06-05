@@ -1,0 +1,6 @@
+name = PRIME SIFTING
+description = Module that takes a number and returns all prime numbers to that number.
+package = Epicodus Examples
+core = 7.x
+files[] = primesifting.module
+files[] = primesifting.test

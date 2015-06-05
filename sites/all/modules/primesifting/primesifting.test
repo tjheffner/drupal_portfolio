@@ -1,0 +1,25 @@
+<?php
+
+class PrimesiftingTestClass extends DrupalUnitTestCase {
+    public static function getInfo() {
+        return array(
+            'name' => 'Prime Sifting Unit Test',
+            'description' => 'A test of some kind',
+            'group' => 'Examples',
+        );
+    }
+
+    function testPrimeSifting() {
+        $input = 4;
+        $result = primesifting($input);
+        $message = 'An input of 4 will return [2, 3]';
+        $this->assertEqual($result, 2);
+
+        $input = 11;
+        $result = primesifting($input);
+        $message = 'An input of 11 will return [2, 3, 5, 7, 11]';
+        $this->assertEqual($result, 5);
+    }
+}
+
+?>

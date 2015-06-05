@@ -1,0 +1,129 @@
+<?php
+
+//MENU SETUP
+function cipher_menu() {
+  $items = array();
+  $items['encrypt'] = array(
+    'title' => 'Encrypt a Message',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cipher_form'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['success'] = array(
+    'title' => 'Encrypted Successfully!',
+    'page callback' => 'cipher_success',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+//FORM SETUP
+function cipher_form() {
+  $form['shift_phrase'] = array(
+    '#title' => 'Message to Encrypt',
+    '#type' => 'textfield',
+    '#description' => t('What are you trying to hide?'),
+    '#element_validate' => array('element_validate_letters'),
+    '#required' => TRUE,
+  );
+  $form['shift_value'] = array(
+    '#title' => 'Shift Number',
+    '#type' => 'textfield',
+    '#description' => t('Enter a value to shift your message by'),
+    '#element_validate' => array('element_validate_integer_positive', 'element_validate_range'),
+    '#required' => TRUE,
+  );
+  $form['shift_direction'] = array(
+    '#title' => 'Shift Direction',
+    '#type' => 'textfield',
+    '#description' => t('Enter direction to shift (left or right)'),
+    '#element_validate' => array('element_validate_direction'),
+    '#required' => TRUE,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Encrypt Message'
+  );
+  return $form;
+}
+
+
+//VALIDATION FUNCTIONS
+function element_validate_direction($element) {
+  $direction = $element['#value'];
+  $valid_directions = array(
+    'left', 'L', 'LEFT', 'l',
+    'right', 'R', 'RIGHT', 'r'
+  );
+
+  if (!in_array($direction, $valid_directions)) {
+        form_error($element, t('Choose a valid direction to shift.'));
+    }
+}
+
+function element_validate_range($element) {
+  if ($element['#value'] > 25 || $element['#value'] < 1) {
+        form_error($element, t('Please enter a number between 1 and 25 (inclusive).'));
+  }
+}
+
+function element_validate_letters($element) {
+  if(preg_match('/[^a-zA-Z ,.!?;:]/', $element['#value'])) {
+         form_error($element, t('We can\'t encrypt numbers at this time.'));
+     }
+}
+
+//SESSION VARIABLES!
+function cipher_form_submit($form, &$form_state) {
+  $value = $form_state['values']['shift_value'];
+  $direction = $form_state['values']['shift_direction'];
+  $message = $form_state['values']['shift_phrase'];
+
+  $_SESSION['input'] = array($value, $direction, $message);
+
+  $form_state['redirect'] = 'success';
+}
+
+//WHERE THE MAGIC HAPPENS
+function cipher_success() {
+
+//gets our values out so we have something to work with
+  $input = $_SESSION['input'];
+
+   $message = $input[2];
+   $direction = $input[1];
+   $value = $input[0];
+
+//interprets "left" & "right" directions as positive / negative
+   $shift = ($direction == 'left' || 'L' || 'LEFT') ? 0 - $value : $value;
+
+//empty string for the start of encryption
+   $secret = "";
+
+   for ($i = 0; $i < strlen($message); $i++) {
+
+//skips punctuation + spaces
+       if(preg_match('/[ ,.!?;:]/', $message[$i])) {
+           $secret .= $message[$i];
+           continue;
+       }
+
+//converts to ascii + lowercase, adds shifted value/letter
+       $ascii = ord(strtolower($message[$i]));
+       $ascii += $shift;
+
+//26 is for letters in the alphabet, 97/122 keep the ascii within alphabetical characters. no umlauts!
+       if($ascii < 97) {
+           $ascii += 26;
+       }
+       elseif($ascii > 122) {
+           $ascii -= 26;
+       }
+       $secret .= chr($ascii);
+   }
+   return "Your encrypted message is: <strong>$secret</strong><br>" . "The key to break your message is:<strong> $value </strong><br>" . "<em>Keep that a secret!</em>" ;
+
+}

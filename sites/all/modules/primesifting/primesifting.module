@@ -1,0 +1,58 @@
+<?php
+
+function primesifting_menu() {
+    $items['prime'] = array(
+        'title' => 'PRIME SIFTING',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('primesifting_form'),
+        'access callback' => TRUE,
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $items['success'] = array(
+        'title' => 'SUCCESS!!!!!!!!!!!!!!!!!!!!!!!!!',
+        'page callback' => 'primesifting_form_success',
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+function primesifting_form() {
+    $form['number'] = array(
+        '#title' => 'Enter a number',
+        '#type' => 'textfield',
+        '#required' => TRUE,
+    );
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Enter',
+    );
+    return $form;
+}
+
+function primesifting($input) {
+    $prime_array = range(2, $input);
+    $primes = array_combine($prime_array, $prime_array);
+    $prime_counter = 2;
+
+    while ($prime_counter < $input) {
+        foreach ($primes as $number) {
+            if (($number % $prime_counter == 0) && ($number != $prime_counter)) {
+                unset($primes[$number]);
+            }
+        }
+        $prime_counter++;
+    }
+    return $primes;
+}
+
+function primesifting_form_submit($form, &$form_state) {
+    $_SESSION['output'] = primesifting($form_state['values']['number']);
+    $_SESSION['count'] = count($_SESSION['output']);
+    $form_state['redirect'] = 'success';
+}
+
+function primesifting_form_success() {
+    $output = implode(", ", $_SESSION['output']);
+    return "There are " . $_SESSION['count'] . " primes in your input range. The primes are: " . $output;
+}
