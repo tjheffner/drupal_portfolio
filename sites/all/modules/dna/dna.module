@@ -19,27 +19,48 @@ function dna_menu() {
 
 function dna_form() {
     $form['sequence'] = array(
-
+        '#title' => 'Enter Half of a DNA Sequence:',
+        '#type' => 'textfield',
+        '#description' => t('DNA is a double helix DNA is a molecule which essentially carries the programming instructions to create all life on Earth. But, it\'s composed of surprisingly simple elements. There are 4 of these elements, called nucleotides. They start with the letters A T C G.
+                            This means that there are two sequences of nucleotides that run side by side.'),
+        '#element_validate' => array('element_validate_base'),
+        '#required' => TRUE,
     );
     $form['submit'] = array(
-
+        '#type' => 'submit',
+        '#value' => 'Sequence',
     );
     return $form;
 }
 
 function element_validate_base($element) {
+    $input_sequence = strtoupper($element['#value']);
+    $letters = explode($input_sequence);
 
+//    $nucleotides = array(
+//        'A', 'T', 'C', 'G',
+//    );
+
+    $invalid_letters = [
+        'B', 'D', 'E', 'F', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'U', 'V', 'W', 'X', 'Y', 'Z'
+    ];
+
+    if (in_array($letters, $invalid_letters)) {
+        form_error($element, t('Re-enter your DNA string please'));
+    }
 }
 
 function dna_form_submit($form, &$form_state) {
-
+    $_SESSION['output'] = sequence($form_state['values']['sequence']);
+    $form_state['redirect'] = 'dna_success';
 }
 
 function sequence($input) {
-    
+
     return $output;
 }
 
 function dna_form_success() {
-
+    $output = $_SESSION['output'];
+    return "The other half of your dna string is: " . $output;
 }
