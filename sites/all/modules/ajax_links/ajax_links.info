@@ -1,0 +1,5 @@
+name = Ajax Viewer
+description = Module to allow AJAX calls in certain blocks
+package = Epicodus Examples
+core = 7.x
+files[] = ajax_links.module
