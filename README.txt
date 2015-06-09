@@ -1,3 +1,11 @@
+#### for diane’s grading:
+
+dbname: admin
+dbpass: password
+
+site name: tanner
+site pass: password
+
 
 CONTENTS OF THIS FILE
 ---------------------
